@@ -13,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
@@ -45,9 +46,9 @@ abstract class BaseFragment<B : ViewBinding>(private val fragmentLayout: Int) : 
         Manifest.permission.RECORD_AUDIO,
         Manifest.permission.READ_EXTERNAL_STORAGE,
     ).apply {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            add(Manifest.permission.ACCESS_MEDIA_LOCATION)
-        }
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+//            add(Manifest.permission.ACCESS_MEDIA_LOCATION)
+//        }
     }
 
     private val permissionRequest = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
@@ -92,6 +93,7 @@ abstract class BaseFragment<B : ViewBinding>(private val fragmentLayout: Int) : 
         getMediaQMinus()
     }.reversed()
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     private fun getMediaQPlus(): List<Media> {
         val items = mutableListOf<Media>()
         val contentResolver = requireContext().applicationContext.contentResolver

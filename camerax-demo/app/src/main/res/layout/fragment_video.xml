@@ -38,18 +38,19 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <ImageButton
-        android:id="@+id/btnGallery"
-        android:layout_width="@dimen/button_size_small"
-        android:layout_height="@dimen/button_size_small"
-        android:background="@android:color/transparent"
-        android:elevation="1dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/ic_no_picture"
-        app:layout_constraintBottom_toBottomOf="@id/btnRecordVideo"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/btnRecordVideo"
-        app:layout_constraintTop_toTopOf="@id/btnRecordVideo" />
+<!--    <ImageButton-->
+<!--        android:id="@+id/btnGallery"-->
+<!--        android:layout_width="@dimen/button_size_small"-->
+<!--        android:layout_height="@dimen/button_size_small"-->
+<!--        android:background="@android:color/transparent"-->
+<!--        android:elevation="1dp"-->
+<!--        android:scaleType="centerCrop"-->
+<!--        android:visibility="invisible"-->
+<!--        android:src="@drawable/ic_no_picture"-->
+<!--        app:layout_constraintBottom_toBottomOf="@id/btnRecordVideo"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toEndOf="@id/btnRecordVideo"-->
+<!--        app:layout_constraintTop_toTopOf="@id/btnRecordVideo" />-->
 
     <ImageButton
         android:id="@+id/btnSwitchCamera"

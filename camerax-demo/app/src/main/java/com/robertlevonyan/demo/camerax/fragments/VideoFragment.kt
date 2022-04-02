@@ -17,6 +17,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
+import androidx.camera.view.video.OnVideoSavedCallback
 import androidx.core.animation.doOnCancel
 import androidx.core.content.ContextCompat
 import androidx.core.view.WindowInsetsCompat
@@ -122,7 +123,7 @@ class VideoFragment : BaseFragment<FragmentVideoBinding>(R.layout.fragment_video
                     displayManager.unregisterDisplayListener(displayListener)
             })
             binding.btnRecordVideo.setOnClickListener { recordVideo() }
-            btnGallery.setOnClickListener { openPreview() }
+//            btnGallery.setOnClickListener { openPreview() }
             btnSwitchCamera.setOnClickListener { toggleCamera() }
             btnGrid.setOnClickListener { toggleGrid() }
             btnFlash.setOnClickListener { toggleFlash() }
@@ -296,10 +297,14 @@ class VideoFragment : BaseFragment<FragmentVideoBinding>(R.layout.fragment_video
                         // Create small preview
                         outputFileResults.savedUri
                             ?.let { uri ->
-                                setGalleryThumbnail(uri)
+//                                setGalleryThumbnail(uri)
                                 Log.d(TAG, "Video saved in $uri")
                             }
-                            ?: setLastPictureThumbnail()
+//                            ?: setLastPictureThumbnail()
+
+                        if (activity is VideoCapture.OnVideoSavedCallback) {
+                            (activity as? VideoCapture.OnVideoSavedCallback)?.onVideoSaved(outputFileResults);
+                        }
                     }
 
                     override fun onError(videoCaptureError: Int, message: String, cause: Throwable?) {
@@ -309,6 +314,10 @@ class VideoFragment : BaseFragment<FragmentVideoBinding>(R.layout.fragment_video
                         Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
                         Log.e(TAG, msg)
                         cause?.printStackTrace()
+
+                        if (activity is VideoCapture.OnVideoSavedCallback) {
+                            (activity as? VideoCapture.OnVideoSavedCallback)?.onError(videoCaptureError, message, cause);
+                        }
                     }
                 })
         } else {
@@ -355,38 +364,38 @@ class VideoFragment : BaseFragment<FragmentVideoBinding>(R.layout.fragment_video
                 startCamera()
                 lifecycleScope.launch(Dispatchers.IO) {
                     // Do on IO Dispatcher
-                    setLastPictureThumbnail()
+//                    setLastPictureThumbnail()
                 }
                 camera?.cameraControl?.enableTorch(isTorchOn)
             }
         }
     }
 
-    private fun setLastPictureThumbnail() = binding.btnGallery.post {
-        getMedia().firstOrNull() // check if there are any photos or videos in the app directory
-            ?.let { setGalleryThumbnail(it.uri) } // preview the last one
-            ?: binding.btnGallery.setImageResource(R.drawable.ic_no_picture) // or the default placeholder
-    }
+//    private fun setLastPictureThumbnail() = binding.btnGallery.post {
+//        getMedia().firstOrNull() // check if there are any photos or videos in the app directory
+//            ?.let { setGalleryThumbnail(it.uri) } // preview the last one
+//            ?: binding.btnGallery.setImageResource(R.drawable.ic_no_picture) // or the default placeholder
+//    }
 
-    private fun setGalleryThumbnail(savedUri: Uri?) = binding.btnGallery.let { btnGallery ->
-        // Do the work on view's thread, this is needed, because the function is called in a Coroutine Scope's IO Dispatcher
-        btnGallery.post {
-            btnGallery.load(savedUri) {
-                placeholder(R.drawable.ic_no_picture)
-                transformations(CircleCropTransformation())
-                listener(object : ImageRequest.Listener {
-                    override fun onError(request: ImageRequest, throwable: Throwable) {
-                        super.onError(request, throwable)
-                        binding.btnGallery.load(savedUri) {
-                            placeholder(R.drawable.ic_no_picture)
-                            transformations(CircleCropTransformation())
-                            fetcher(VideoFrameUriFetcher(requireContext()))
-                        }
-                    }
-                })
-            }
-        }
-    }
+//    private fun setGalleryThumbnail(savedUri: Uri?) = binding.btnGallery.let { btnGallery ->
+//        // Do the work on view's thread, this is needed, because the function is called in a Coroutine Scope's IO Dispatcher
+//        btnGallery.post {
+//            btnGallery.load(savedUri) {
+//                placeholder(R.drawable.ic_no_picture)
+//                transformations(CircleCropTransformation())
+//                listener(object : ImageRequest.Listener {
+//                    override fun onError(request: ImageRequest, throwable: Throwable) {
+//                        super.onError(request, throwable)
+//                        binding.btnGallery.load(savedUri) {
+//                            placeholder(R.drawable.ic_no_picture)
+//                            transformations(CircleCropTransformation())
+//                            fetcher(VideoFrameUriFetcher(requireContext()))
+//                        }
+//                    }
+//                })
+//            }
+//        }
+//    }
 
     override fun onBackPressed() = requireActivity().finish()
 
