@@ -55,7 +55,8 @@ class VideoFragment : BaseFragment<FragmentVideoBinding>(R.layout.fragment_video
     private var displayId = -1
 
     // Selector showing which camera is selected (front or back)
-    private var lensFacing = CameraSelector.DEFAULT_BACK_CAMERA
+//    private var lensFacing = CameraSelector.DEFAULT_BACK_CAMERA
+    private var lensFacing = CameraSelector.DEFAULT_FRONT_CAMERA
 
     // Selector showing which flash mode is selected (on, off or auto)
     private var flashMode by Delegates.observable(ImageCapture.FLASH_MODE_OFF) { _, _, new ->
@@ -131,7 +132,7 @@ class VideoFragment : BaseFragment<FragmentVideoBinding>(R.layout.fragment_video
             // This swipe gesture adds a fun gesture to switch between video and photo
             val swipeGestures = SwipeGestureDetector().apply {
                 setSwipeCallback(left = {
-                    Navigation.findNavController(view).navigate(R.id.action_video_to_camera)
+//                    Navigation.findNavController(view).navigate(R.id.action_video_to_camera)
                 })
             }
 
@@ -260,7 +261,7 @@ class VideoFragment : BaseFragment<FragmentVideoBinding>(R.layout.fragment_video
      * Navigate to PreviewFragment
      * */
     private fun openPreview() {
-        view?.let { Navigation.findNavController(it).navigate(R.id.action_video_to_preview) }
+//        view?.let { Navigation.findNavController(it).navigate(R.id.action_video_to_preview) }
     }
 
     @SuppressLint("MissingPermission")

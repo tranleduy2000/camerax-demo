@@ -60,7 +60,7 @@
         android:elevation="1dp"
         android:padding="@dimen/half_margin"
         android:scaleType="centerInside"
-        android:src="@drawable/ic_outline_camera_front"
+        android:src="@drawable/ic_outline_camera_rear"
         app:layout_constraintBottom_toBottomOf="@id/btnRecordVideo"
         app:layout_constraintEnd_toStartOf="@id/btnRecordVideo"
         app:layout_constraintStart_toStartOf="parent"
