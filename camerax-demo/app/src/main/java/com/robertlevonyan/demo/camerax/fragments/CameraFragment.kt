@@ -494,6 +494,7 @@ class CameraFragment : BaseFragment<FragmentCameraBinding>(R.layout.fragment_cam
                 binding.tvCountDown.text = i.toString()
                 delay(1000)
             }
+            else -> {}
         }
         binding.tvCountDown.text = ""
         captureImage()
