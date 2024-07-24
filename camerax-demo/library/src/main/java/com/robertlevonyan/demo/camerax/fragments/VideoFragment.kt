@@ -8,31 +8,42 @@ import android.content.res.Configuration
 import android.hardware.camera2.CameraCharacteristics
 import android.hardware.camera2.CameraMetadata
 import android.hardware.display.DisplayManager
-import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.DisplayMetrics
 import android.util.Log
 import android.view.GestureDetector
 import android.view.View
-import android.widget.Toast
 import androidx.camera.camera2.interop.Camera2CameraInfo
 import androidx.camera.camera2.interop.ExperimentalCamera2Interop
-import androidx.camera.core.*
+import androidx.camera.core.AspectRatio
+import androidx.camera.core.Camera
+import androidx.camera.core.CameraSelector
+import androidx.camera.core.ImageCapture
+import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
-import androidx.camera.video.*
+import androidx.camera.video.FallbackStrategy
+import androidx.camera.video.MediaStoreOutputOptions
+import androidx.camera.video.Quality
+import androidx.camera.video.QualitySelector
+import androidx.camera.video.Recorder
+import androidx.camera.video.Recording
+import androidx.camera.video.VideoCapture
+import androidx.camera.video.VideoRecordEvent
 import androidx.core.animation.doOnCancel
 import androidx.core.content.ContextCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.Navigation
-import coil.load
-import coil.request.ErrorResult
-import coil.request.ImageRequest
-import coil.transform.CircleCropTransformation
 import com.robertlevonyan.demo.camerax.R
 import com.robertlevonyan.demo.camerax.databinding.FragmentVideoBinding
-import com.robertlevonyan.demo.camerax.utils.*
+import com.robertlevonyan.demo.camerax.utils.SharedPrefsManager
+import com.robertlevonyan.demo.camerax.utils.SwipeGestureDetector
+import com.robertlevonyan.demo.camerax.utils.bottomMargin
+import com.robertlevonyan.demo.camerax.utils.endMargin
+import com.robertlevonyan.demo.camerax.utils.fitSystemWindows
+import com.robertlevonyan.demo.camerax.utils.onWindowInsets
+import com.robertlevonyan.demo.camerax.utils.toggleButton
+import com.robertlevonyan.demo.camerax.utils.topMargin
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlin.math.abs
@@ -283,6 +294,7 @@ class VideoFragment : BaseFragment<FragmentVideoBinding>(R.layout.fragment_video
         if (recording != null) {
             animateRecord.cancel()
             recording?.stop()
+            return;
         }
         val name = "CameraX-recording-${System.currentTimeMillis()}.mp4"
         val contentValues = ContentValues().apply {
@@ -306,14 +318,20 @@ class VideoFragment : BaseFragment<FragmentVideoBinding>(R.layout.fragment_video
                         if (!event.hasError()) {
                             val msg = "Video capture succeeded: " +
                                     "${event.outputResults.outputUri}"
-                            Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT)
-                                .show()
+                            //Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT)
+                            //    .show()
                             Log.d(TAG, msg)
+                            if (activity is OnVideoSavedCallback) {
+                                (activity as? OnVideoSavedCallback)?.onVideoSaved(event.outputResults);
+                            }
                         } else {
                             recording?.close()
                             recording = null
                             Log.e(TAG, "Video capture ends with error: " +
                                     "${event.error}")
+                            if (activity is OnVideoSavedCallback) {
+                                (activity as? OnVideoSavedCallback)?.onError(event.error, event.cause);
+                            }
                         }
                     }
                 }
